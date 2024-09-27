@@ -1,22 +1,14 @@
-site_name: HMC
+site_name: Project 2A
 site_author: Mirantis
 docs_dir: ./docs
 repo_name: GitHub
 repo_url: https://github.com/mirantis/hmc
 copyright:
-  '© 2005 - 2024 Mirantis, Inc. All rights reserved. “Mirantis” and “FUEL” are registered trademarks of Mirantis, Inc. All other trademarks are the property of their respective owners.'
-nav:
-  - Home: index.md
-  - Introduction: introduction.md
-  - Quick Start: quick-start.md
-  - Developer Guide: dev.md
-
-
-
+  '© 2005 - 2024 Mirantis, Inc. All rights reserved.'
 theme:
   name: "material"
   font:
-    text: overpass
+    text: Overpass
     code: Roboto Mono
   palette:
     # Palette toggle for light mode
@@ -41,8 +33,16 @@ theme:
   search_index_only: true
   features:
     - toc.autohide
+    - toc.integrate
     - search.suggest
     - search.highlight
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.footer
+    - navigation.path
+
+    
 
 extra_css:
   - stylesheets/extra.css
@@ -51,3 +51,34 @@ plugins:
   - search
   - mermaid2
 
+#extra:
+#  generator: false
+
+# Page tree
+
+nav:
+  - Home: index.md
+  - Introduction: introduction.md
+  - Installation:
+      - Quick Start: install/quick-start.md
+      - Installation Guide: install/installation.md
+      - Templates: templates/templates.md
+  - Developer Guide: dev.md
+  - Provider Guides:
+    - AWS: 
+      - aws/main.md
+      - aws/cloudformation.md
+      - aws/credentials.md
+      - aws/cluster-parameters.md
+      - aws/hosted-control-plane.md
+      - aws/nuke.md
+    - Azure: 
+      - azure/main.md
+      - azure/cluster-parameters.md
+      - azure/hosted-control-plane.md
+      - azure/machine-parameters.md
+    - Vsphere: 
+      - vsphere/main.md
+      - vsphere/cluster-parameters.md
+      - vsphere/hosted-control-plane.md
+      - vsphere/machine-parameters.md

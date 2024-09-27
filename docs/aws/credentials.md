@@ -26,7 +26,7 @@ export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm bootstrap credentials encode-a
 > By default, HMC fetches the AWS variables configuration from the `aws-variables` secret in the `hmc-system`
 > namespace. If you want to change the name of the secret you should overwrite the configuration of the cluster 
 > API provider AWS in the HMC Management object. \
-> For details, see: [Extended Management Configuration](../../README.md#extended-management-configuration)
+> For details, see: [Extended Management Configuration](../install/installation.md#extended-management-configuration)
 
 > You can also provide additional configuration variables, but the `AWS_B64ENCODED_CREDENTIALS` parameter is required.
 

@@ -1,4 +1,4 @@
-# HMC MKdocs Setup
+# Project 2A MKdocs Setup
 
 ## Project layout
 

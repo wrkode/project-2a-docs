@@ -1,4 +1,4 @@
-# Welcome to HMC Docs
+# Welcome to Mirantis Project 2A Docs
 
 
 # Introduction
