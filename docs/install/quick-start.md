@@ -1,8 +1,5 @@
-# Mirantis Hybrid Cloud Platform
 
-## Installation
-
-### TLDR
+## TLDR
 
     kubectl apply -f https://github.com/Mirantis/hmc/releases/download/v0.0.1/install.yaml
 

@@ -19,8 +19,7 @@ reused with a management cluster.
 If you deployed your AWS Kubernetes cluster using Cluster API Provider AWS (CAPA)
 you can obtain all the necessary data with the commands below or use the
 template found below in the
-[HMC ManagedCluster manifest
-generation](#hmc-managed-cluster-manifest-generation) section.
+[HMC ManagedCluster manifest generation](#hmc-managedcluster-manifest-generation) section.
 
 If using the `aws-standalone-cp` template to deploy a hosted cluster it is
 recommended to use a `t3.large` or larger instance type as the `hmc-controller`
