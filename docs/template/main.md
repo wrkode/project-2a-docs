@@ -77,33 +77,139 @@ spec:
 ```
 
 The `Template` should follow the rules mentioned below:
+
 1. `spec.type` should be `deployment` (as an alternative, the referenced helm chart may contain the
 `hmc.mirantis.com/type: deployment` annotation in `Chart.yaml`).
 2. `spec.providers` should contain the list of required Cluster API providers: `infrastructure`, `bootstrap` and
-`controlPlane`. As an alternative, the referenced helm chart may contain the specific annotations in the
-`Chart.yaml` (value is a list of providers divided by comma). These fields are only used for validation. For example:
+`controlPlane`. As an alternative, the referenced helm chart may contain the specific annotations in the `Chart.yaml` (value is a list of providers divided by comma). These fields are only used for validation. For example:
 
-`Template` spec:
+    `Template` spec:
 
-```yaml
-spec:
-  providers:
-    infrastructure:
-      - aws
-    bootstrap:
-      - k0s
-    controlPlane:
-      - k0smotron
-```
+    ```yaml
+    spec:
+      providers:
+        infrastructure:
+          - aws
+        bootstrap:
+          - k0s
+        controlPlane:
+          - k0smotron
+    ```
 
-`Chart.yaml`:
+    `Chart.yaml`:
 
-```bash
-annotations:
-  hmc.mirantis.com/infrastructure-providers: aws
-  hmc.mirantis.com/controlplane-providers: k0smotron
-  hmc.mirantis.com/bootstrap-providers: k0s
-```
+    ```bash
+    annotations:
+      hmc.mirantis.com/infrastructure-providers: aws
+      hmc.mirantis.com/controlplane-providers: k0smotron
+      hmc.mirantis.com/bootstrap-providers: k0s
+    ```
+
+## Compatibility attributes
+
+Each of the `*Template` resources has compatibility versions attributes, including exact versions or version constraints.
+Both must be set in the Semantic Version format. Each attribute can be set either via the corresponding `.spec` fields or via the annotations.
+Values set via the `.spec` have precedence over the values set via the annotations.
+
+1. The `ProviderTemplate` resource has dedicated fields to set an exact compatible `CAPI` version along
+with exact compatibility versions for each of the `infrastructure`, `bootstrap`
+and `controlPlane` providers type.
+Given compatibility values will be then set accordingly in the `.status` field.
+
+    Example with the `.spec`:
+
+    ```yaml
+    apiVersion: hmc.mirantis.com/v1alpha1
+    kind: ProviderTemplate
+    # ...
+    spec:
+      capiVersion: 1.7.3 # exact version must be set
+      providers:
+        bootstrap:
+        - name: k0s
+          versionOrConstraint: 1.0.0 # exact version must be set
+        controlPlane:
+        - name: k0smotron
+          versionOrConstraint: 1.34.0 # exact version must be set
+        infrastructure:
+        - name: aws
+          versionOrConstraint: 1.2.3 # exact version must be set
+    ```
+
+    Example with the `annotations` in the `Chart.yaml`:
+
+    ```yaml
+    hmc.mirantis.com/capi-version: 1.7.3
+    hmc.mirantis.com/bootstrap-providers: k0s 1.0.0 # space-separated comma-separated list, e.g. k0s 1.0.0, k0s 1.0.1
+    hmc.mirantis.com/controlplane-providers: k0smotron 1.34.0 # space-separated comma-separated list, e.g. k0s 1.0.0, k0smotron 1.34.5
+    hmc.mirantis.com/infrastructure-providers: aws 1.2.3 # space-separated comma-separated list
+    ```
+
+1. The `ClusterTemplate` resource has dedicated fields to set an exact compatible Kubernetes version
+along with compatibility constrainted versions for each of the `infrastructure`, `bootstrap`
+and `controlPlane` providers type to match against the related `ProviderTemplate` objects.
+Given compatibility values will be then set accordingly in the `.status` field.
+
+    Example with the `spec`:
+
+    ```yaml
+    apiVersion: hmc.mirantis.com/v1alpha1
+    kind: ClusterTemplate
+    # ...
+    spec:
+      k8sVersion: 1.30.0 # exact version must be set
+      providers:
+        bootstrap:
+        - name: k0s
+          versionOrConstraint: ">=1.0.0" # version constraints must be set
+        controlPlane:
+        - name: k0smotron
+          versionOrConstraint: "^1.34.0" # version constraints must be set
+        infrastructure:
+        - name: aws
+          versionOrConstraint: "~1.2.3" # version constraints must be set
+    ```
+
+    Example with the `annotations` in the `Chart.yaml`:
+
+    ```yaml
+    hmc.mirantis.com/k8s-version: 1.30.0
+    hmc.mirantis.com/bootstrap-providers: k0s >=1.0.0 # space-separated comma-separated list
+    hmc.mirantis.com/controlplane-providers: k0smotron ^1.34.0 # space-separated comma-separated list, e.g. k0s >=1.0.0, k0smotron ~1.34.0
+    hmc.mirantis.com/infrastructure-providers: aws ~1.2.3 # space-separated comma-separated list
+    ```
+
+1. The `ClusterTemplate` resource has dedicated fields to set an compatibility constrainted
+Kubernetes version to match against the related `ClusterTemplate` objects.
+Given compatibility values will be then set accordingly in the `.status` field.
+
+    Example with the `spec`:
+
+    ```yaml
+    apiVersion: hmc.mirantis.com/v1alpha1
+    kind: ServiceTemplate
+    # ...
+    spec:
+      k8sConstraint: "^1.30.0" # version constraints must be set
+    ```
+
+    Example with the `annotations` in the `Chart.yaml`:
+
+    ```yaml
+    hmc.mirantis.com/k8s-version-constraint: ^1.30.0
+    ```
+
+### Compatibility attributes enforcement
+
+The aforedescribed attributes are being checked and enforced in the `validatingwebhook` sticking
+to the following rules:
+
+* both the exact and constraint version of the same type (e.g. `k8sVersion` and `k8sConstraint`) must
+be set otherwise no check is performed;
+* if a `ProviderTemplate` object's exact providers versions do not satisfy the constraints
+from the related `ClusterTemplate` object, the updates to the `ManagedCluster` object will be blocked;
+* if a `ClusterTemplate` object's exact kubernetes version does not satisfy the constraint
+from the related `ServiceTemplate` object, the updates to the `ManagedCluster` object will be blocked.
 
 ## Remove Templates shipped with HMC
 
@@ -111,22 +217,22 @@ If you need to limit the cluster templates that exist in your HMC installation, 
 
 1. Get the list of `deployment` Templates shipped with HMC:
 
-```bash
-kubectl get templates -n hmc-system -l helm.toolkit.fluxcd.io/name=hmc-templates  | grep deployment
-```
+    ```bash
+    kubectl get templates -n hmc-system -l helm.toolkit.fluxcd.io/name=hmc-templates  | grep deployment
+    ```
 
-Example output:
-```bash
-aws-hosted-cp              deployment   true
-aws-standalone-cp          deployment   true
-```
+    Example output:
+
+    ```bash
+    aws-hosted-cp              deployment   true
+    aws-standalone-cp          deployment   true
+    ```
 
 2. Remove the templates from the list:
 
-```bash
-kubectl delete template -n hmc-system <template-name>
-
-```
+    ```bash
+    kubectl delete template -n hmc-system <template-name>
+    ```
 <!---
 TODO: document `--create-template=false` controller flag once the templates are limited to deployment templates only.
 -->
