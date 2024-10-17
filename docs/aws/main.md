@@ -1,4 +1,4 @@
-# Prepare the AWS infra provider
+# Prepare the AWS infrastructure provider
 
 ## Software prerequisites
 
@@ -7,8 +7,8 @@
 
 ## Configure AWS IAM
 
-Follow the AWS IAM [setup quide](cloudformation.md#aws-iam-setup).
+Follow the AWS IAM [setup guide](cloudformation.md#aws-iam-setup).
 
 ## AWS cluster parameters
 
-Follow the [AWS Cluster Parameters guide](cluster-parameters.md#aws-cluster-parameters)
+Follow the [AWS Cluster Parameters guide](cluster-parameters.md#aws-cluster-parameters).
