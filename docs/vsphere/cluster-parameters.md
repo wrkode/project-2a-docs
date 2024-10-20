@@ -86,7 +86,7 @@ kind: ManagedCluster
 metadata:
   name: cluster-1
 spec:
-  template: vsphere-standalone-cp
+  template: vsphere-standalone-cp-0-0-2
   credential: vsphere-credential
   config:
     clusterIdentity:

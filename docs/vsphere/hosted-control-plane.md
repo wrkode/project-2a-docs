@@ -29,7 +29,8 @@ kind: ManagedCluster
 metadata:
   name: cluster-1
 spec:
-  template: vsphere-hosted-cp
+  template: vsphere-hosted-cp-0-0-2
+  credential: vsphere-credential
   config:
     clusterIdentity:
       name: vsphere-cluster-identity

@@ -122,7 +122,7 @@ kind: ManagedCluster
 metadata:
   name: cluster-1
 spec:
-  template: aws-standalone-cp
+  template: aws-standalone-cp-0-0-2
   credential: aws-cred
   config:
     sshKeyName: foobar
