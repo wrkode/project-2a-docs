@@ -73,14 +73,12 @@ kind: ManagedCluster
 metadata:
   name: azure-hosted-cp
 spec:
-  template: azure-hosted-cp
+  template: azure-hosted-cp-0-0-2
+  credential: azure-credential
   config:
     location: "westus"
     subscriptionID: ceb131c7-a917-439f-8e19-cd59fe247e03
     vmSize: Standard_A4_v2
-    clusterIdentity:
-      name: az-cluster-identity
-      namespace: hmc-system
     resourceGroup: mgmt-cluster
     network:
       vnetName: mgmt-cluster-vnet
@@ -100,14 +98,12 @@ kind: ManagedCluster
 metadata:
   name: azure-hosted-cp
 spec:
-  template: azure-hosted-cp
+  template: azure-hosted-cp-0-0-2
+  credential: azure-credential
   config:
     location: "{{.spec.location}}"
     subscriptionID: "{{.spec.subscriptionID}}"
     vmSize: Standard_A4_v2
-    clusterIdentity:
-      name: az-cluster-identity
-      namespace: hmc-system
     resourceGroup: "{{.spec.resourceGroup}}"
     network:
       vnetName: "{{.spec.networkSpec.vnet.name}}"
@@ -127,8 +123,9 @@ kubectl get azurecluster <management cluster name> -o go-template="$(cat templat
 
 ## Cluster creation
 
-After applying `ManagedCluster` object you require to manually set the status of the
-`AzureCluster` object due to current limitations (see k0sproject/k0smotron#668).
+After applying `ManagedCluster` object you require to manually set the status of
+the `AzureCluster` object due to current limitations (see
+[k0sproject/k0smotron#668](https://github.com/k0sproject/k0smotron/issues/668)).
 
 To do so you need to execute the following command:
 
