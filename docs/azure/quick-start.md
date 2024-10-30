@@ -76,7 +76,7 @@ Example output:
 ```diff
 Name                     SubscriptionId                        TenantId
 -----------------------  -------------------------------------  --------------------------------
-My Azure Subscription    12345678-1234-5678-1234-567812345678  87654321-4321-8765-4321-876543214321
+My Azure Subscription    12345678-1234-5678-1234-567812345678  87654321-1234-5678-1234-12345678
 ```
 
 Copy your chosen Subscription ID for the next step.
@@ -95,20 +95,21 @@ You will see output like this:
 
 ```json
 {
- "appId": "29a3a125-7848-4ce6-9be9-a4b3eecca0ff",
- "displayName": "azure-cli",
- "password": "u_RANDOMHASH",
- "tenant": "2f10bc28-959b-481f-b094-eb043a87570a",
+ "appId": "12345678-7848-4ce6-9be9-a4b3eecca0ff",
+ "displayName": "azure-cli-2024-10-24-17-36-47",
+ "password": "12~34~I5zKrL5Kem2aXsXUw6tIig0M~3~1234567",
+ "tenant": "12345678-959b-481f-b094-eb043a87570a",
 }
 ```
 
 Copy and save these values somewhere safe, for creating
 the `AzureClusterIdentity` object and it's secret:
 
-appId → This is the Client ID
-password → This is the Client Secret
-tenant → This is the Tenant ID``
-
+    
+    appId -> This is the Client ID
+    password -> This is the Client Secret
+    tenant -> This is the Tenant ID
+    
 Subscription ID which was used to create service principal should be the
 same that will be used in the `.spec.config.subscriptionID` field of the
 `ManagedCluster` object.
@@ -138,7 +139,7 @@ The Secret stores the clientSecret (password) from the Service Principal.
    name: az-cluster-identity-secret
    namespace: hmc-system
    stringData:
-   clientSecret: u_RANDOMHASH # Password retrieved from the Service Principal
+   clientSecret: password # Password retrieved from the Service Principal
    type: Opaque
    ```
 
@@ -164,11 +165,11 @@ This object defines the credentials CAPZ will use to manage Azure resources.
    namespace: hmc-system
    spec:
    allowedNamespaces: {}
-   clientID: 29a3a125-7848-4ce6-9be9-a4b3eecca0ff # AppID retrieved from the Service Principal
+   clientID: appId # AppId retrieved from the Service Principal
    clientSecret:
       name: az-cluster-identity-secret
       namespace: hmc-system
-   tenantID: 2f10bc28-959b-481f-b094-eb043a87570a # TennantID retrieved from the Service Principal
+   tenantID: tenant # TennantID retrieved from the Service Principal
    type: ServicePrincipal
    ```
 
@@ -180,7 +181,8 @@ This object defines the credentials CAPZ will use to manage Azure resources.
 
 #### Step 3: Verify the Resources
 
-After applying both YAML files, you can verify that the objects were created successfully:
+After applying both YAML files, you can verify that the objects were
+created successfully:
 
 1. Check the Secret:
 
@@ -194,9 +196,71 @@ After applying both YAML files, you can verify that the objects were created suc
    kubectl get azureclusteridentity az-cluster-identity -n hmc-system
    ```
 
-## Next
+## Install HMC
 
-#### Create the clusters by using all the different options of HMC in 2A
+
+To install HMC, first check the latest release at [https://github.com/Mirantis/hmc/tags](https://github.com/Mirantis/hmc/tags).
+
+Then, run the following command to deploy HMC on your cluster:
+
+```bash
+kubectl apply -f https://github.com/Mirantis/hmc/releases/download/v0.0.3/install.yaml
+```
+
+Wait a moment for the pods to initialize. Once complete, you should see output
+similar to the following:
+
+
+```bash
+kubectl get po -n hmc-system
+NAMESPACE                           NAME                                                             READY   STATUS              RESTARTS        AGE
+cert-manager                        cert-manager-6bcd5c585d-tdtx7                                    1/1     Running             2               14m
+cert-manager                        cert-manager-cainjector-df6db5846-6npqg                          1/1     Running             1 (3m31s ago)   14m
+cert-manager                        cert-manager-webhook-6ff7fbb9ff-nvfl9                            1/1     Running             2               14m
+hmc-system                          helm-controller-76f675f6b7-qwvxv                                 1/1     Running             4               54m
+hmc-system                          hmc-cert-manager-7c8bd964b4-l4pls                                1/1     Running             2 (4m1s ago)    54m
+hmc-system                          hmc-cert-manager-cainjector-56476c46f9-fx2sk                     1/1     Running             0               54m
+hmc-system                          hmc-cert-manager-webhook-69d7fccf68-nzzvq                        1/1     Running             2               54m
+hmc-system                          hmc-controller-manager-855fbf9586-f44ch                          1/1     Running             5 (2m44s ago)   54m
+hmc-system                          hmc-flux-check-svfzl                                             0/1     Completed           0               54m
+hmc-system                          source-controller-5f648d6f5d-fkfxh                               1/1     Running             4 (2m44s ago)   54m
+```
+Once all the components are installed, check the clustertemplate with:
+
+```bash
+kubectl get clustertemplate -n hmc-system
+NAME                          VALID
+aws-eks-0-0-1                 false
+aws-hosted-cp-0-0-2           false
+aws-standalone-cp-0-0-2       false
+azure-hosted-cp-0-0-2         false
+azure-standalone-cp-0-0-2     false
+vsphere-hosted-cp-0-0-2       false
+vsphere-standalone-cp-0-0-2   false
+```
+### Enable the cluster template by
+
+#### Step 1
+
+#### Step 2
+
+
+## Create the Management Server
+
+### Test Management cluster status/health
+
+
+## Create workload clusters
+
+### Accessing workload cluster
+
+
+
+
+
+## Deleting everything
+  
+
 
 ## Azure machine parameters
 
