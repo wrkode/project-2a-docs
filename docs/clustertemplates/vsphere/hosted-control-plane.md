@@ -12,8 +12,7 @@ reside in the management cluster.
 ## ManagedCluster manifest
 
 Hosted CP template has mostly identical parameters with standalone CP, you can
-check them in the [cluster parameters](cluster-parameters.md) and the
-[machine parameters](machine-parameters.md) sections.
+check them in the [template parameters](template-parameters.md) section.
 
 **Important note on control plane endpoint IP**
 

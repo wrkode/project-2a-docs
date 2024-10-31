@@ -1,52 +1,7 @@
-# vSphere cluster parameters
+# vSphere cluster template parameters
 
-## Prerequisites
 
-- vSphere provider [prerequisites](main.md#prerequisites) are complete.
 
-## Cluster Identity
-
-To provide credentials for CAPI vSphere provider (CAPV) the
-`VSphereClusterIdentity` resource must be created. This should be done before
-provisioning any clusters.
-
-To create cluster identity you'll only need username and password for your
-vSphere instance.
-
-The example of the objects can be found below:
-
-**Secret**:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: vsphere-cluster-identity-secret
-  namespace: hmc-system
-stringData:
-  username: user
-  password: Passw0rd
-```
-
-**VsphereClusterIdentity**:
-
-```yaml
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: VSphereClusterIdentity
-metadata:
-  name: vsphere-cluster-identity
-spec:
-  secretName: vsphere-cluster-identity-secret
-  allowedNamespaces:
-    selector:
-      matchLabels: {}
-```
-
-To be used for the cluster creation.`VsphereClusterIdentity` then should be
-referenced in the `Credential` object.
-
-For more details regarding the credential system check the [credential section](../credential/main.md)
-of the docs.
 
 ## ManagedCluster parameters
 
@@ -67,8 +22,6 @@ for successful cluster creation.
 | `.spec.config.vsphere.resourcePool` | `/DC/host/vCluster/Resources/ResPool` | Resource pool path                 |
 | `.spec.config.vsphere.folder`       | `/DC/vm/example`                      | vSphere folder path                |
 
-_You can check [machine parameters](machine-parameters.md) for machine specific
-parameters._
 
 To obtain vSphere certificate thumbprint you can use the following command:
 
@@ -122,3 +75,58 @@ spec:
       vmTemplate: "/DC/vm/template"
       network: "/DC/network/Net"
 ```
+
+
+## SSH
+
+Currently SSH configuration on vSphere expects that user is already created
+during template creation. Because of that you must pass username along with SSH
+public key to configure SSH access.
+
+
+SSH public key can be passed to `.spec.config.ssh.publicKey` (in case of
+hosted CP) parameter or `.spec.config.controlPlane.ssh.publicKey` and
+`.spec.config.worker.ssh.publicKey` parameters (in case of standalone CP) of the
+`ManagedCluster` object.
+
+SSH public key must be passed literally as a string.
+
+Username can be passed to `.spec.config.controlPlane.ssh.user`,
+`.spec.config.worker.ssh.user` or `.spec.config.ssh.user` depending on you
+deployment model.
+
+## VM resources
+
+The following parameters are used to define VM resources:
+
+| Parameter         | Example | Description                                                          |
+|-------------------|---------|----------------------------------------------------------------------|
+| `.rootVolumeSize` | `50`    | Root volume size in GB (can't be less than one defined in the image) |
+| `.cpus`           | `2`     | Number of CPUs                                                       |
+| `.memory`         | `4096`  | Memory size in MB                                                    |
+
+The resource parameters are the same for hosted and standalone CP deployments,
+but they are positioned differently in the spec, which means that they're going to:
+
+- `.spec.config` in case of hosted CP deployment.
+- `.spec.config.controlPlane` in in case of standalone CP for control plane
+  nodes.
+- `.spec.config.worker` in in case of standalone CP for worker nodes.
+
+## VM Image and network
+
+To provide image template path and network path the following parameters must be
+used:
+
+| Parameter     | Example           | Description         |
+|---------------|-------------------|---------------------|
+| `.vmTemplate` | `/DC/vm/template` | Image template path |
+| `.network`    | `/DC/network/Net` | Network path        |
+
+As with resource parameters the position of these parameters in the
+`ManagedCluster` depends on deployment type and these parameters are used in:
+
+- `.spec.config` in case of hosted CP deployment.
+- `.spec.config.controlPlane` in in case of standalone CP for control plane
+  nodes.
+- `.spec.config.worker` in in case of standalone CP for worker nodes.

@@ -23,7 +23,7 @@ To get more details, run the previous command with `-o=yaml` option and check th
 > are defined in the `ClusterTemplateChain` objects. Also, the `TemplateManagement` object should contain properly
 > configured `spec.accessRules` with the list of `ClusterTemplateChain` object names and the namespaces where
 > the supported templates from the chain spec will be delivered. For details, see:
-> [Template Life Cycle Management](../template/template-management.md#template-life-cycle-management)
+> [Template Life Cycle Management](../template/main.md#template-life-cycle-management)
 
 <!---
 TODO: Later all `ClusterTemplates` that are available for the update will be shown in the `ManagedCluster` status.
