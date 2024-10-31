@@ -1,7 +1,7 @@
 # Credential system
 
 In order for infrastructure provider to work properly a correct credentials
-should be passed to it. The following describes how it is implemented in Project 0x2A.
+should be passed to it. The following describes how it is implemented in Project 2A.
 
 ## The process
 
@@ -93,6 +93,10 @@ are needed.
 
 Since AWS uses roles, which are assigned to instances, no additional credentials
 will be created.
+
+AWS provider supports 3 types of `ClusterIdentity`, which one to use depends on
+your specific use case. More information regarding CAPA `ClusterIdentity`
+resources could be found in [CRD Reference](https://cluster-api-aws.sigs.k8s.io/crd/).
 
 #### Azure
 

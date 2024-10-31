@@ -1,4 +1,4 @@
-# Hosted control plane (k0smotron) deployment
+# Azure Hosted control plane (k0smotron) deployment
 
 ## Prerequisites
 
