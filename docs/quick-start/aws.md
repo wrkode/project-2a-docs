@@ -147,7 +147,7 @@ metadata:
   name: my-aws-managedcluster1
   namespace: hmc-system
 spec:
-  template: aws-standalone-cp-0-0-3
+  template: aws-standalone-cp-0-0-2
   credential: aws-cluster-identity-cred
   config:
     region: us-west-2
