@@ -17,7 +17,7 @@ For `ClusterTemplate` and `ServiceTemplate` configure the namespace where this t
 > referencing them. The `ManagedCluster` can't reference the Template from another namespace (the creation request will
 > be declined by the admission webhook). All `ClusterTemplates` and `ServiceTemplates` shipped with HMC reside in the
 > system namespace (defaults to `hmc-system`). To get the instructions on how to distribute Templates along multiple
-> namespaces, read [Template Life Cycle Management](template-management.md#template-life-cycle-management).
+> namespaces, read [Template Life Cycle Management](main.md#template-life-cycle-management).
 
 Here is an example of a custom `ClusterTemplate` with the `HelmChart` reference:
 

@@ -10,7 +10,7 @@ kubectl get template -n hmc-system -o go-template='{{ range .items }}{{ if eq .s
 
 For details about the `Template system` in HMC, see [Templates system](../template/main.md).
 
-If you want to deploy hostded control plate template, make sure to check additional notes on [Hosted control plane](../aws/hosted-control-plane.md).
+If you want to deploy hostded control plate template, make sure to check additional notes on Hosted control plane for each of the clustertemplate sections.
 
 2. Create the file with the `ManagedCluster` configuration:
 

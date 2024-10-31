@@ -42,7 +42,6 @@ There are two options to override the default management configuration of HMC:
 configuration:
 
    * Create `management.yaml` file and configure core components and providers.
-   See [Management API](api/v1alpha1/management_types.go).
 
    * Specify `--create-management=false` controller argument and install HMC:
 

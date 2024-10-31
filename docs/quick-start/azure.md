@@ -116,18 +116,18 @@ Save the AzureClusterIdentity YAML into a file named `azure-cluster-identity.yam
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AzureClusterIdentity
 metadata:
-labels:
-  clusterctl.cluster.x-k8s.io/move-hierarchy: "true"
-name: azure-cluster-identity
-namespace: hmc-system
-spec:
-allowedNamespaces: {}
-clientID: <appId> # AppId retrieved from the Service Principal
-clientSecret:
-  name: azure-cluster-identity-secret
+  labels:
+    clusterctl.cluster.x-k8s.io/move-hierarchy: "true"
+  name: azure-cluster-identity
   namespace: hmc-system
-tenantID: <tenant> # TennantID retrieved from the Service Principal
-type: ServicePrincipal
+spec:
+  allowedNamespaces: {}
+  clientID: <appId> # AppId retrieved from the Service Principal
+  clientSecret:
+    name: azure-cluster-identity-secret
+    namespace: hmc-system
+  tenantID: <tenant> # TennantID retrieved from the Service Principal
+  type: ServicePrincipal
 ```
 
 Apply the YAML to your cluster:
@@ -136,8 +136,33 @@ Apply the YAML to your cluster:
   kubectl apply -f azure-cluster-identity.yaml
 ```
 
+## Step 5: Create the 2A Credential Object
 
-## Step 5: Create the first managedCluster
+Create a YAML with the specificaion of our credential and safe it as `azure-cluster-identity-cred.yaml`
+
+> The `kind:` must be `AzureClusterIdentity` and the `name:` must match of the `AzureClusterIdentity` object.
+
+```yaml
+apiVersion: hmc.mirantis.com/v1alpha1
+kind: Credential
+metadata:
+  name: azure-cluster-identity-cred
+  namespace: hmc-system
+spec:
+  identityRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: AzureClusterIdentity
+    name: azure-cluster-identity
+    namespace: hmc-system
+```
+
+Apply the YAML to your cluster:
+
+```bash
+kubectl apply -f aws-cluster-identity-cred.yaml
+```
+
+## Step 6: Create the first managedCluster
 
 Create a YAML with the specificaion of your managed Cluster and safe it as `my-azure-managedcluster1.yaml`
 
@@ -148,8 +173,8 @@ metadata:
   name: my-azure-managedcluster1
   namespace: hmc-system
 spec:
-  template: azure-standalone-cp-0-0-3
-  credential: azure-cluster-identity
+  template: azure-standalone-cp-0-0-2
+  credential: azure-cluster-identity-cred
   config:
     location: "westus" # Select your desired Azure Location (find it via `az account list-locations -o table`)
     subscriptionID: <Subscription ID> # Enter the Subscription ID used earlier
@@ -162,12 +187,12 @@ spec:
 Follow along the creation of the cluster
 
 ```bash
-kubectl get managedcluster.hmc.mirantis.com my-azure-managedcluster1  --watch
+kubectl -n hmc-system get managedcluster.hmc.mirantis.com my-azure-managedcluster1  --watch
 ```
 
 After the cluster is `Ready` you can access it via the kubeconfig, like this:
 
 ```bash
-kubectl get secret my-azure-managedcluster1-kubeconfig -o jsonpath='{.data.value}' | base64 -d > my-azure-managedcluster1-kubeconfig.kubeconfig
-KUBECONFIG="hmc-system-azure-test1-kubeconfig.kubeconfig" kubectl get pods -A
+kubectl -n hmc-system get secret my-azure-managedcluster1-kubeconfig -o jsonpath='{.data.value}' | base64 -d > my-azure-managedcluster1-kubeconfig.kubeconfig
+KUBECONFIG="my-azure-managedcluster1-kubeconfig.kubeconfig" kubectl get pods -A
 ```
