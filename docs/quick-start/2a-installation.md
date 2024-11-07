@@ -1,19 +1,26 @@
-
 ### Requirements
 
-2A requires a k8s cluster, it can be of any type, it will become the 2A
-management cluster.
+Project 2A requires a Kubernetes cluster. It can be of any type and will become
+the 2A _management cluster_.
 
-If you don't have a k8s cluster yet, we suggest to use
+If you don't have a Kubernetes cluster yet, consider using
 [k0s](https://docs.k0sproject.io/stable/install/).
 
-The below commands assume:
+The following instructions assume:
 
-- That your kubeconfig points to the correct Kubernetes Cluster.
-- You have [helm](https://helm.sh/docs/intro/install/) installed.
+- Your `kubeconfig` points to the correct Kubernetes cluster.
+- You have [Helm](https://helm.sh/docs/intro/install/) installed.
 - You have [kubectl](https://kubernetes.io/docs/tasks/tools/) installed.
 
-### Installation via helm
+#### Helpful Tools
+
+It may be helpful to have the following tools installed:
+
+- [clusterctl](https://cluster-api.sigs.k8s.io/user/quick-start.html?highlight=clusterctl#install-clusterctl)
+- [Mirantis Lens](https://k8slens.dev/)
+- [k9s](https://k9scli.io/)
+
+### Installation via Helm
 
 ```bash
 helm install hmc oci://ghcr.io/mirantis/hmc/charts/hmc --version 0.0.3 -n hmc-system --create-namespace
@@ -21,15 +28,19 @@ helm install hmc oci://ghcr.io/mirantis/hmc/charts/hmc --version 0.0.3 -n hmc-sy
 
 ### Verification
 
-The installation will take a couple of minutes until 2A and its subcomponents is
+The installation takes a couple of minutes until 2A and its subcomponents are
 fully installed and configured.
 
-You can verify the successfull installation with checking all the pods in the
-`hmc-system` namespace, the output should rougly look like:
+Verify the installation by checking all the pods in the `hmc-system` namespace
+with the following command:
 
 ```bash
-kubectl -n hmc-system get pods -n hmc-system
+kubectl get pods -n hmc-system
+```
 
+The output is similar to:
+
+```bash
 NAME                                                           READY   STATUS
 azureserviceoperator-controller-manager-86d566cdbc-rqkt9       1/1     Running
 capa-controller-manager-7cd699df45-28hth                       1/1     Running
@@ -48,15 +59,18 @@ k0smotron-controller-manager-infrastructure-7f77f55675-tv8vb   2/2     Running
 source-controller-5f648d6f5d-7mhz5                             1/1     Running
 ```
 
-If you have less pods, give 2A a little longer to reconcile all the pods.
+If you have fewer pods, give 2A more time to reconcile all the pods.
 
-As a second verification, check that the example ClusterTemplates have been
-installed and are valid:
+As a second verification, check that the example `ClusterTemplate` objects have
+been installed and are valid:
 
 ```bash
-
 kubectl get clustertemplate -n hmc-system
+```
 
+The output is similar to:
+
+```bash
 NAME                                VALID
 aws-eks-0-0-1                       true
 aws-hosted-cp-0-0-2                 true
@@ -76,5 +90,11 @@ vsphere-standalone-cp-0-0-2         true
 
 ### Next Step
 
-Now you can start to configure our Infra Provider of choice and create the first
-Managed Cluster.
+Now you can configure your Infrastructure Provider of choice and create your
+first Managed Cluster.
+
+Jump to any of the following Infrastructure Providers for specific instructions:
+
+- [AWS Quick Start](aws.md)
+- [Azure Quick Start](azure.md)
+- [vSphere Quick Start](vsphere.md)

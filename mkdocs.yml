@@ -57,6 +57,7 @@ plugins:
 
 markdown_extensions:
   - callouts
+  - tables
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
@@ -70,8 +71,8 @@ nav:
   - Home: index.md
   - Quick Start:
     - 2A Installation: quick-start/2a-installation.md
-    - Azure: quick-start/azure.md
     - AWS: quick-start/aws.md
+    - Azure: quick-start/azure.md
     - vSphere: quick-start/vsphere.md
   - Usage:
       - Installation Guide: usage/installation.md
@@ -81,12 +82,12 @@ nav:
       - Overview: template/main.md
       - BYO Templates: template/byo-templates.md
   - ClusterTemplates:
-      - Azure:
-        - Template Parameters: clustertemplates/azure/template-parameters.md
-        - Hosted Control Plane: clustertemplates/azure/hosted-control-plane.md
       - AWS:
         - Template Parameters: clustertemplates/aws/template-parameters.md
         - Hosted Control Plane: clustertemplates/aws/hosted-control-plane.md
+      - Azure:
+        - Template Parameters: clustertemplates/azure/template-parameters.md
+        - Hosted Control Plane: clustertemplates/azure/hosted-control-plane.md
       - vSphere:
         - Template Parameters: clustertemplates/vsphere/template-parameters.md
         - Hosted Control Plane: clustertemplates/vsphere/hosted-control-plane.md
