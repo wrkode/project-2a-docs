@@ -1,9 +1,9 @@
 # Templates system
 
-By default, 2A delivers a set of default `ProviderTemplate`, `ClusterTemplate` and `SystemTemplate` objects:
+By default, 2A delivers a set of default `ProviderTemplate`, `ClusterTemplate` and `ServiceTemplate` objects:
 
 * `ProviderTemplate`
-   The template containing the configuration of the provider, ex. k0smotron. Cluster-scoped.
+   The template containing the configuration of the provider (ie k0smotron). Cluster-scoped.
 * `ClusterTemplate`
    The template containing the configuration of the cluster objects. Namespace-scoped.
 * `ServiceTemplate`
